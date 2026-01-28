@@ -1,5 +1,5 @@
 {
-  "name": "horror-studio-server",
+  "name": "horror-studio-v3",
   "type": "module",
   "dependencies": {
     "cors": "^2.8.5",
