@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Horror-Studio — Чат</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: #555;
+      color: white;
+    }
+
+    .overlay {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Верхняя панель */
+    .topbar {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      gap: 10px;
+      background: rgba(0,0,0,0.90);
+      position: relative;
+    }
+
+    .back {
+      font-size: 22px;
+      cursor: pointer;
+      opacity: 0.85;
+    }
+
+    .story-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .story-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .story-info {
+      flex: 1;
+    }
+
+    .story-title {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .top-icons {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-right: 6px;
+    }
+
+    .top-icons svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+      opacity: 0.85;
+    }
+
+    .menu-btn {
+      font-size: 22px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Меню ⋮ */
+    .dropdown {
+      position: absolute;
+      top: 55px;
+      right: 10px;
+      background: rgba(25,25,25,0.97);
+      border-radius: 12px;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+      min-width: 200px;
+      z-index: 50;
+    }
+
+    .dropdown button {
+      padding: 12px;
+      border: none;
+      background: none;
+      color: white;
+      font-size: 14px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .dropdown button:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    /* ЧАТ */
+    .chat {
+      flex: 1;
+      padding: 15px 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .system {
+      margin: 6px auto;
+      padding: 7px 16px;
+      font-size: 13px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.15);
+      opacity: 0.85;
+      text-align: center;
+      max-width: 85%;
+    }
+
+    .msg {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      max-width: 85%;
+    }
+
+    .msg.npc {
+      justify-content: flex-start;
+    }
+
+    .msg.player {
+      justify-content: flex-end;
+      margin-left: auto;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .bubble {
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .npc .bubble {
+      background: rgba(60,60,60,0.90);
+      border-bottom-left-radius: 6px;
+    }
+
+    .player .bubble {
+      background: rgba(0,120,255,0.75);
+      border-bottom-right-radius: 6px;
+    }
+
+    .name {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-bottom: 2px;
+    }
+
+    /* Нижняя панель */
+    .bottom-bar {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      gap: 10px;
+      background: rgba(0,0,0,0.88);
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background: rgba(255,255,255,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+      opacity: 0.85;
+    }
+
+    .msg-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      border-radius: 18px;
+      padding: 10px 12px;
+      font-size: 14px;
+      background: rgba(255,255,255,0.14);
+      color: white;
+    }
+
+    .send-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background: #b00000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .send-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: white;
+    }
+  </style>
+</head>
+
+<body>
+<div class="overlay">
+
+  <!-- Верх -->
+  <div class="topbar">
+    <div class="back" onclick="goBack()">←</div>
+
+    <div class="story-avatar">
+      <img id="storyAvatar" src="">
+    </div>
+
+    <div class="story-info">
+      <div class="story-title" id="storyTitle">История</div>
+    </div>
+
+    <div class="top-icons">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9
+        a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6
+        a5 5 0 00-5-5zm-3 8V6a3 3 0 016 0v3H9z"/>
+      </svg>
+
+      <div class="menu-btn" onclick="toggleMenu()">⋮</div>
+    </div>
+
+    <div class="dropdown" id="dropdownMenu">
+      <button onclick="openFile()">📂 Загрузить историю</button>
+      <button onclick="saveChat()">💾 Сохранить чат</button>
+    </div>
+  </div>
+
+  <input id="fileInput" type="file" accept=".json" onchange="loadStory(event)">
+
+  <!-- Чат -->
+  <div class="chat" id="chat">
+    <div class="system">Нажми ⋮ чтобы загрузить историю</div>
+  </div>
+
+  <!-- Низ -->
+  <div class="bottom-bar">
+
+    <button class="icon-btn">
+      <svg viewBox="0 0 24 24">
+        <path d="M11 5h2v14h-2zM5 11h14v2H5z"/>
+      </svg>
+    </button>
+
+    <button class="icon-btn" onclick="insertEmoji()">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-3 7a1.2 1.2 0 110 2.4A1.2 1.2 0 019 9zm6 0a1.2 1.2 0 110 2.4A1.2 1.2 0 0115 9zm-6.2 6h6.4c-.5 1.5-2 2.5-3.2 2.5S9.3 16.5 8.8 15z"/>
+      </svg>
+    </button>
+
+    <input id="messageInput" class="msg-input"
+      placeholder="Напишите сообщение..."
+      oninput="updateSendButton()"
+    />
+
+    <button class="send-btn" onclick="sendMessage()">
+      <svg id="sendIcon" viewBox="0 0 24 24"></svg>
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+  const chat = document.getElementById("chat");
+  let storyData = null;
+
+  function goBack() {
+    window.location.href = "author.html";
+  }
+
+  function toggleMenu() {
+    const menu = document.getElementById("dropdownMenu");
+    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+  }
+
+  function openFile() {
+    toggleMenu();
+    document.getElementById("fileInput").click();
+  }
+
+  function addSystem(text) {
+    const div = document.createElement("div");
+    div.className = "system";
+    div.innerText = text;
+    chat.appendChild(div);
+  }
+
+  function insertEmoji() {
+    document.getElementById("messageInput").value += "😊";
+    updateSendButton();
+  }
+
+  function updateSendButton() {
+    const input = document.getElementById("messageInput");
+    const icon = document.getElementById("sendIcon");
+
+    if (input.value.trim() === "") {
+      icon.innerHTML = `
+        <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z"/>
+        <path d="M19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0
+        7 7 0 006 6.9V21h2v-3.1A7 7 0 0019 11z"/>
+      `;
+    } else {
+      icon.innerHTML = `
+        <path d="M2 21l21-9L2 3v7l15 2-15 2z"/>
+      `;
+    }
+  }
+
+  function sendMessage() {
+    const input = document.getElementById("messageInput");
+    const text = input.value.trim();
+    if (!text) return;
+
+    const msg = document.createElement("div");
+    msg.className = "msg player";
+    msg.innerHTML = `<div class="bubble">${text}</div>`;
+    chat.appendChild(msg);
+
+    input.value = "";
+    updateSendButton();
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function loadStory(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      storyData = JSON.parse(e.target.result);
+      startStory();
+    };
+    reader.readAsText(file);
+  }
+
+  function startStory() {
+    chat.innerHTML = "";
+
+    document.getElementById("storyTitle").innerText = storyData.title;
+
+    if (storyData.storyAvatar) {
+      document.getElementById("storyAvatar").src = storyData.storyAvatar;
+    }
+
+    addSystem("Начало истории:");
+    addSystem(storyData.setup.startSituation);
+  }
+
+  function saveChat() {
+    alert("Сохранение чата будет позже.");
+  }
+
+  window.onload = function() {
+    const saved = localStorage.getItem("horror_story");
+    if (saved) {
+      storyData = JSON.parse(saved);
+      startStory();
+    }
+
+    updateSendButton();
+  };
+
+  updateSendButton();
+</script>
+
+</body>
+</html>
