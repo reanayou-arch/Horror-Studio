@@ -1,175 +1,64 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Horror-Studio — Меню</title>
+  <title>Horror-Studio</title>
 
   <style>
     body {
       margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: #111;
+      font-family: Arial;
+      background: #0b0b0b;
       color: white;
-      padding: 20px;
+      text-align: center;
     }
 
     h1 {
-      text-align: center;
-      font-size: 26px;
-      margin-bottom: 25px;
+      margin-top: 40px;
+      font-size: 42px;
     }
 
     .btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: none;
-      background: darkred;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-bottom: 20px;
-    }
-
-    .story-item {
-      background: rgba(255,255,255,0.06);
-      padding: 14px;
-      border-radius: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .story-title {
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .dots {
-      font-size: 22px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .popup {
-      position: absolute;
+      width: 90%;
+      max-width: 400px;
+      padding: 18px;
+      margin: 15px auto;
+      border-radius: 18px;
       background: #222;
-      border-radius: 12px;
-      padding: 8px;
-      display: none;
-      flex-direction: column;
-      gap: 6px;
-      z-index: 999;
-    }
-
-    .popup button {
-      background: none;
+      font-size: 20px;
       border: none;
       color: white;
-      text-align: left;
-      padding: 10px;
-      border-radius: 10px;
+      display: block;
       cursor: pointer;
     }
 
-    .popup button:hover {
-      background: rgba(255,255,255,0.08);
+    .btn:hover {
+      background: #333;
     }
 
-    .version {
-      text-align: center;
-      opacity: 0.6;
-      margin-top: 25px;
-      font-size: 13px;
+    footer {
+      margin-top: 50px;
+      opacity: 0.4;
     }
   </style>
 </head>
+
 <body>
 
-<h1>Horror-Studio 🪐</h1>
+  <h1>Horror-Studio 🪐</h1>
 
-<button class="btn" onclick="location.href='author.html'">
-  ➕ Добавить историю
-</button>
+  <button class="btn" onclick="location.href='author.html'">
+    ➕ Добавить историю
+  </button>
 
-<div id="storyList"></div>
+  <button class="btn" onclick="location.href='play.html'">
+    ▶ Открыть чат
+  </button>
 
-<div class="version">(Версия панели: V3.0.1)</div>
-
-<script>
-let stories = JSON.parse(localStorage.getItem("stories") || "[]");
-
-function renderStories() {
-  const list = document.getElementById("storyList");
-  list.innerHTML = "";
-
-  stories.forEach((story, i) => {
-    const div = document.createElement("div");
-    div.className = "story-item";
-
-    div.innerHTML = `
-      <div class="story-title">${story.title}</div>
-      <div class="dots" onclick="toggleMenu(event, ${i})">⋮</div>
-      <div class="popup" id="popup_${i}">
-        <button onclick="openStory(${i})">▶ Открыть</button>
-        <button onclick="downloadStory(${i})">⬇ Скачать</button>
-        <button onclick="editStory(${i})">✏ Редактировать</button>
-        <button onclick="deleteStory(${i})">🗑 Удалить</button>
-      </div>
-    `;
-
-    list.appendChild(div);
-  });
-}
-
-function toggleMenu(e, index) {
-  e.stopPropagation();
-  document.querySelectorAll(".popup").forEach(p => p.style.display="none");
-
-  const popup = document.getElementById("popup_" + index);
-  popup.style.display = "flex";
-  popup.style.top = e.clientY + "px";
-  popup.style.left = (window.innerWidth - 200) + "px";
-}
-
-document.body.addEventListener("click", () => {
-  document.querySelectorAll(".popup").forEach(p => p.style.display="none");
-});
-
-function openStory(i) {
-  localStorage.setItem("active_story", JSON.stringify(stories[i]));
-  location.href="play.html";
-}
-
-function downloadStory(i) {
-  const blob = new Blob([JSON.stringify(stories[i], null, 2)], {
-    type: "application/json"
-  });
-
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href=url;
-  a.download=stories[i].title + ".json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function editStory(i) {
-  localStorage.setItem("edit_index", i);
-  location.href="author.html";
-}
-
-function deleteStory(i) {
-  stories.splice(i,1);
-  localStorage.setItem("stories", JSON.stringify(stories));
-  renderStories();
-}
-
-renderStories();
-</script>
+  <footer>
+    Панель V3.3.1
+  </footer>
 
 </body>
 </html>
