@@ -1,8 +1,22 @@
 const express = require("express");
 const path = require("path");
+const cors = require("cors");
+
+// ✅ node-fetch подключаем правильно под Render
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 const app = express();
 app.use(express.json());
+
+// ===============================
+// ✅ CORS (GitHub Pages → Render)
+// ===============================
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 // ===============================
 // ✅ Раздаём папку public как сайт
@@ -27,7 +41,7 @@ app.post("/chat", async (req, res) => {
       return res.status(400).json({ error: "Нет сообщения" });
     }
 
-    // ✅ Render Environment Variable
+    // ✅ Groq API Key из Render ENV
     const GROQ_KEY = process.env.GROQ_API_KEY;
 
     if (!GROQ_KEY) {
@@ -36,7 +50,7 @@ app.post("/chat", async (req, res) => {
       });
     }
 
-    // ✅ Запрос к Groq
+    // ✅ Запрос к Groq API
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
