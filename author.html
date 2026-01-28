@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Horror-Studio — Панель автора</title>
 
   <style>
@@ -22,53 +21,42 @@
 
     .container {
       width: 95%;
-      max-width: 650px;
+      max-width: 600px;
       margin: auto;
     }
 
     h1 {
       text-align: center;
       font-size: 26px;
-      margin-bottom: 10px;
-      font-weight: 800;
+      margin: 20px 0;
+      font-weight: 900;
     }
 
-    .subtitle {
+    .planet {
       text-align: center;
-      opacity: 0.7;
-      margin-bottom: 25px;
+      font-size: 22px;
+      margin-top: -10px;
+      opacity: 0.8;
     }
 
     .block {
       background: rgba(255, 255, 255, 0.06);
-      padding: 16px;
-      border-radius: 16px;
-      margin-top: 15px;
-    }
-
-    button {
-      width: 100%;
       padding: 14px;
-      margin-top: 12px;
       border-radius: 14px;
-      border: none;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 700;
-      color: white;
+      margin-top: 14px;
     }
 
-    .main-btn {
-      background: rgba(140, 0, 0, 0.85);
-    }
-
-    .gray-btn {
-      background: rgba(255,255,255,0.12);
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      opacity: 0.9;
     }
 
     input, textarea {
       width: 100%;
-      margin-top: 6px;
+      margin-top: 5px;
       padding: 10px;
       border-radius: 12px;
       border: none;
@@ -80,103 +68,116 @@
     }
 
     textarea {
-      min-height: 70px;
       resize: vertical;
+      min-height: 70px;
     }
 
-    .story-item {
-      position: relative;
-      background: rgba(255,255,255,0.05);
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 15px;
+    }
+
+    .red {
+      background: rgba(140, 0, 0, 0.85);
+      color: white;
+    }
+
+    .gray {
+      background: rgba(255,255,255,0.10);
+      color: white;
+    }
+
+    .character-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
       padding: 14px;
       border-radius: 14px;
-      margin-top: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .story-title {
-      font-weight: 800;
-      font-size: 16px;
-    }
-
-    .menu-btn {
-      font-size: 22px;
-      cursor: pointer;
-      padding: 4px 10px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.08);
-    }
-
-    .dropdown {
-      position: absolute;
-      top: 52px;
-      right: 14px;
-      background: rgba(20,20,20,0.96);
-      border-radius: 12px;
-      overflow: hidden;
-      display: none;
-      flex-direction: column;
-      min-width: 180px;
-      z-index: 50;
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .dropdown button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      background: none;
-      color: white;
-      font-size: 14px;
-      text-align: left;
-      cursor: pointer;
-    }
-
-    .dropdown button:hover {
-      background: rgba(255,255,255,0.08);
-    }
-
-    .danger {
-      color: #ff5555;
-    }
-
-    #editor {
-      display: none;
-    }
-
-    .version {
+      background: rgba(255, 255, 255, 0.05);
+      margin-top: 14px;
       text-align: center;
-      margin-top: 25px;
-      opacity: 0.4;
-      font-size: 13px;
     }
 
-    /* Обложка истории */
-    .cover-preview {
-      width: 90px;
-      height: 90px;
+    .avatar {
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.12);
       overflow: hidden;
-      margin: 10px auto;
+      background: rgba(255, 255, 255, 0.12);
     }
 
-    .cover-preview img {
+    .avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    .upload-btn {
-      background: rgba(255,255,255,0.12);
+    .delete-btn {
+      background: none;
+      border: none;
+      color: #ff6666;
+      cursor: pointer;
       font-size: 13px;
-      padding: 10px;
-      margin-top: 8px;
     }
 
-    input[type="file"] {
+    /* ===== MENU LIST ===== */
+
+    .story-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      margin-top: 10px;
+    }
+
+    .story-title {
+      font-weight: 700;
+    }
+
+    .dots {
+      cursor: pointer;
+      font-size: 22px;
+      padding: 0 10px;
+    }
+
+    .menu-popup {
+      position: absolute;
+      background: #222;
+      border-radius: 12px;
+      padding: 8px;
       display: none;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 999;
+    }
+
+    .menu-popup button {
+      background: none;
+      border: none;
+      color: white;
+      text-align: left;
+      padding: 8px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .menu-popup button:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .version {
+      text-align: center;
+      opacity: 0.5;
+      margin-top: 30px;
     }
   </style>
 </head>
@@ -185,46 +186,43 @@
 <div class="overlay">
   <div class="container">
 
-    <!-- Главное меню -->
-    <div id="menu">
+    <!-- ✅ MENU SCREEN -->
+    <div id="menuScreen">
+      <h1>Horror-Studio</h1>
+      <div class="planet">🪐</div>
 
-      <h1>Horror-Studio 🪐</h1>
-      <div class="subtitle">Панель автора</div>
-
-      <button class="main-btn" onclick="openEditor()">
+      <button class="btn gray" onclick="openEditor()">
         ➕ Добавить историю
       </button>
 
-      <button class="gray-btn" onclick="document.getElementById('openFile').click()">
+      <button class="btn gray" onclick="openFile()">
         📂 Открыть историю
       </button>
-
-      <input id="openFile" type="file" accept=".json" onchange="importStory(event)">
 
       <div class="block">
         <h2>Список историй:</h2>
         <div id="storyList"></div>
       </div>
 
-      <div class="version">(Версия панели: V0.1.4)</div>
+      <div class="version">(Версия панели: V0.2.0)</div>
     </div>
 
-    <!-- Редактор -->
-    <div id="editor">
+    <!-- ✅ EDITOR SCREEN -->
+    <div id="editorScreen" style="display:none;">
 
-      <h1 id="editorTitle">Создание истории</h1>
+      <h1>Создание истории</h1>
 
       <!-- Аватар истории -->
       <div class="block">
         <h2>Аватар истории</h2>
-
-        <div class="cover-preview" id="coverPreview"></div>
-
-        <button class="upload-btn" onclick="selectCover()">
+        <div class="avatar" style="margin:auto;">
+          <img id="storyAvatarPreview" style="display:none;">
+        </div>
+        <button class="btn gray" onclick="document.getElementById('storyAvatar').click()">
           📷 Загрузить аватар истории
         </button>
-
-        <input id="coverFile" type="file" accept="image/*" onchange="uploadCover(event)">
+        <input type="file" id="storyAvatar" accept="image/*" style="display:none;"
+          onchange="uploadStoryAvatar(event)">
       </div>
 
       <!-- Основное -->
@@ -236,6 +234,7 @@
         <textarea id="storyDescription"></textarea>
       </div>
 
+      <!-- Предыстория -->
       <div class="block">
         <label>Прошлое:</label>
         <textarea id="storyPast"></textarea>
@@ -244,140 +243,292 @@
         <textarea id="storyStart"></textarea>
       </div>
 
-      <button class="main-btn" onclick="saveStory()">💾 Сохранить</button>
-      <button class="gray-btn" onclick="backToMenu()">← Назад</button>
+      <!-- Персонажи -->
+      <div class="block">
+        <h2>Персонажи</h2>
+        <div id="characterList"></div>
 
+        <button class="btn gray" onclick="addCharacter()">
+          ➕ Добавить персонажа
+        </button>
+      </div>
+
+      <!-- Save -->
+      <button class="btn red" onclick="saveStory()">
+        💾 Сохранить историю
+      </button>
+
+      <button class="btn gray" onclick="backToMenu()">
+        ← Назад
+      </button>
     </div>
 
+    <!-- hidden file loader -->
+    <input type="file" id="openJson" accept=".json" style="display:none;" onchange="importStory(event)">
   </div>
 </div>
 
 <script>
-  let editingStoryId = null;
-  let storyCover = null;
+let characters = [];
+let storyAvatar = null;
+let editingId = null;
 
-  function getStories() {
-    return JSON.parse(localStorage.getItem("stories") || "[]");
-  }
+/* ===== MENU ===== */
 
-  function saveStories(stories) {
-    localStorage.setItem("stories", JSON.stringify(stories));
-  }
+function loadStories() {
+  const list = document.getElementById("storyList");
+  list.innerHTML = "";
 
-  function closeAllMenus() {
-    document.querySelectorAll(".dropdown").forEach(m => m.style.display = "none");
-  }
+  const stories = JSON.parse(localStorage.getItem("stories") || "[]");
 
-  function renderMenu() {
-    const list = document.getElementById("storyList");
-    list.innerHTML = "";
+  stories.forEach(story => {
+    const item = document.createElement("div");
+    item.className = "story-item";
 
-    const stories = getStories();
+    item.innerHTML = `
+      <div class="story-title">${story.title}</div>
+      <div class="dots" onclick="openDots(event,'${story.id}')">⋮</div>
+      <div class="menu-popup" id="popup_${story.id}">
+        <button onclick="openStory('${story.id}')">📖 Открыть</button>
+        <button onclick="downloadStory('${story.id}')">⬇ Скачать</button>
+        <button onclick="editStory('${story.id}')">✏ Редактировать</button>
+        <button onclick="deleteStory('${story.id}')">🗑 Удалить</button>
+      </div>
+    `;
 
-    if (stories.length === 0) {
-      list.innerHTML = "<div style='opacity:0.6;'>Историй пока нет.</div>";
-      return;
-    }
-
-    stories.forEach((story, index) => {
-      const div = document.createElement("div");
-      div.className = "story-item";
-
-      div.innerHTML = `
-        <div class="story-title">${story.title}</div>
-
-        <div class="menu-btn" onclick="toggleStoryMenu(${index})">⋯</div>
-
-        <div class="dropdown" id="menu_${index}">
-          <button onclick="playStory('${story.id}')">▶ Играть</button>
-          <button onclick="downloadStory('${story.id}')">⬇ Скачать</button>
-          <button onclick="editStory('${story.id}')">✏ Редактировать</button>
-          <button class="danger" onclick="deleteStory('${story.id}')">🗑 Удалить</button>
-        </div>
-      `;
-
-      list.appendChild(div);
-    });
-  }
-
-  function toggleStoryMenu(index) {
-    closeAllMenus();
-    document.getElementById("menu_" + index).style.display = "flex";
-  }
-
-  window.addEventListener("click", e => {
-    if (!e.target.classList.contains("menu-btn")) closeAllMenus();
+    list.appendChild(item);
   });
+}
 
-  function playStory(id) {
-    const story = getStories().find(s => s.id === id);
-    localStorage.setItem("horror_story", JSON.stringify(story));
-    window.location.href = "play.html";
+function openDots(e,id){
+  e.stopPropagation();
+  document.querySelectorAll(".menu-popup").forEach(p=>p.style.display="none");
+  const popup=document.getElementById("popup_"+id);
+  popup.style.display="flex";
+  popup.style.left=e.pageX+"px";
+  popup.style.top=e.pageY+"px";
+}
+
+document.body.addEventListener("click",()=>{
+  document.querySelectorAll(".menu-popup").forEach(p=>p.style.display="none");
+});
+
+/* ===== EDITOR ===== */
+
+function openEditor(){
+  editingId=null;
+  resetEditor();
+  document.getElementById("menuScreen").style.display="none";
+  document.getElementById("editorScreen").style.display="block";
+}
+
+function backToMenu(){
+  document.getElementById("editorScreen").style.display="none";
+  document.getElementById("menuScreen").style.display="block";
+  loadStories();
+}
+
+function resetEditor(){
+  characters=[];
+  storyAvatar=null;
+  document.getElementById("storyAvatarPreview").style.display="none";
+  document.getElementById("storyTitle").value="";
+  document.getElementById("storyDescription").value="";
+  document.getElementById("storyPast").value="";
+  document.getElementById("storyStart").value="";
+  renderCharacters();
+}
+
+/* ===== AVATAR STORY ===== */
+
+function uploadStoryAvatar(e){
+  const file=e.target.files[0];
+  if(!file) return;
+
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    storyAvatar=ev.target.result;
+    const img=document.getElementById("storyAvatarPreview");
+    img.src=storyAvatar;
+    img.style.display="block";
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ===== CHARACTERS ===== */
+
+function addCharacter(){
+  characters.push({
+    id:"ch_"+Date.now(),
+    name:"",
+    role:"",
+    personality:"",
+    avatar:null
+  });
+  renderCharacters();
+}
+
+function renderCharacters(){
+  const list=document.getElementById("characterList");
+  list.innerHTML="";
+
+  characters.forEach(char=>{
+    const card=document.createElement("div");
+    card.className="character-card";
+
+    card.innerHTML=`
+      <div class="avatar">
+        ${char.avatar?`<img src="${char.avatar}">`:""}
+      </div>
+
+      <label>Имя:</label>
+      <input value="${char.name}" oninput="updateChar('${char.id}','name',this.value)">
+
+      <label>Роль:</label>
+      <input value="${char.role}" oninput="updateChar('${char.id}','role',this.value)">
+
+      <label>Характер:</label>
+      <textarea oninput="updateChar('${char.id}','personality',this.value)">${char.personality}</textarea>
+
+      <label>Фото:</label>
+      <input type="file" accept="image/*" onchange="uploadAvatar(event,'${char.id}')">
+
+      <button class="delete-btn" onclick="deleteCharacter('${char.id}')">
+        ❌ Удалить персонажа
+      </button>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function updateChar(id,field,value){
+  const c=characters.find(x=>x.id===id);
+  if(c) c[field]=value;
+}
+
+function deleteCharacter(id){
+  characters=characters.filter(x=>x.id!==id);
+  renderCharacters();
+}
+
+function uploadAvatar(e,id){
+  const file=e.target.files[0];
+  if(!file) return;
+
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const c=characters.find(x=>x.id===id);
+    c.avatar=ev.target.result;
+    renderCharacters();
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ===== SAVE STORY ===== */
+
+function saveStory(){
+  const story={
+    id: editingId || "story_"+Date.now(),
+    title: document.getElementById("storyTitle").value,
+    description: document.getElementById("storyDescription").value,
+    avatar: storyAvatar,
+    setup:{
+      past: document.getElementById("storyPast").value,
+      startSituation: document.getElementById("storyStart").value
+    },
+    characters
+  };
+
+  let stories=JSON.parse(localStorage.getItem("stories")||"[]");
+
+  stories = stories.filter(s=>s.id!==story.id);
+  stories.push(story);
+
+  localStorage.setItem("stories",JSON.stringify(stories));
+
+  // Скачать JSON
+  downloadObject(story, story.title+".json");
+
+  alert("История сохранена!");
+  backToMenu();
+}
+
+/* ===== ACTIONS ===== */
+
+function downloadObject(obj,filename){
+  const blob=new Blob([JSON.stringify(obj,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadStory(id){
+  const stories=JSON.parse(localStorage.getItem("stories")||"[]");
+  const story=stories.find(s=>s.id===id);
+  downloadObject(story,story.title+".json");
+}
+
+function deleteStory(id){
+  let stories=JSON.parse(localStorage.getItem("stories")||"[]");
+  stories=stories.filter(s=>s.id!==id);
+  localStorage.setItem("stories",JSON.stringify(stories));
+  loadStories();
+}
+
+function editStory(id){
+  const stories=JSON.parse(localStorage.getItem("stories")||"[]");
+  const story=stories.find(s=>s.id===id);
+
+  editingId=story.id;
+  openEditor();
+
+  document.getElementById("storyTitle").value=story.title;
+  document.getElementById("storyDescription").value=story.description;
+  document.getElementById("storyPast").value=story.setup.past;
+  document.getElementById("storyStart").value=story.setup.startSituation;
+
+  storyAvatar=story.avatar;
+  if(storyAvatar){
+    const img=document.getElementById("storyAvatarPreview");
+    img.src=storyAvatar;
+    img.style.display="block";
   }
 
-  function openEditor() {
-    editingStoryId = null;
-    storyCover = null;
+  characters=story.characters || [];
+  renderCharacters();
+}
 
-    document.getElementById("coverPreview").innerHTML = "";
-    document.getElementById("storyTitle").value = "";
-    document.getElementById("storyDescription").value = "";
-    document.getElementById("storyPast").value = "";
-    document.getElementById("storyStart").value = "";
+function openStory(id){
+  alert("Открыть историю: скоро подключим переход в play.html");
+}
 
-    showEditor();
-  }
+function openFile(){
+  document.getElementById("openJson").click();
+}
 
-  function showEditor() {
-    document.getElementById("menu").style.display = "none";
-    document.getElementById("editor").style.display = "block";
-  }
+function importStory(e){
+  const file=e.target.files[0];
+  if(!file) return;
 
-  function backToMenu() {
-    document.getElementById("editor").style.display = "none";
-    document.getElementById("menu").style.display = "block";
-    renderMenu();
-  }
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const story=JSON.parse(ev.target.result);
 
-  function selectCover() {
-    document.getElementById("coverFile").click();
-  }
-
-  function uploadCover(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = e => {
-      storyCover = e.target.result;
-      document.getElementById("coverPreview").innerHTML =
-        `<img src="${storyCover}">`;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function saveStory() {
-    const story = {
-      id: editingStoryId || "story_" + Date.now(),
-      title: document.getElementById("storyTitle").value,
-      description: document.getElementById("storyDescription").value,
-      storyAvatar: storyCover,
-      setup: {
-        past: document.getElementById("storyPast").value,
-        startSituation: document.getElementById("storyStart").value
-      }
-    };
-
-    let stories = getStories();
+    let stories=JSON.parse(localStorage.getItem("stories")||"[]");
     stories.push(story);
+    localStorage.setItem("stories",JSON.stringify(stories));
 
-    saveStories(stories);
-    alert("История сохранена!");
-    backToMenu();
-  }
+    loadStories();
+    alert("История загружена!");
+  };
+  reader.readAsText(file);
+}
 
-  renderMenu();
+/* INIT */
+loadStories();
 </script>
-
 </body>
 </html>
