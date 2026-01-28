@@ -4,37 +4,44 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Horror-Studio — Игра</title>
+  <title>Horror-Studio — Чат</title>
 
   <style>
     body {
       margin: 0;
       font-family: "Segoe UI", sans-serif;
-      background: #222;
+      background: #555;
       color: white;
+    }
+
+    .overlay {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     /* Верхняя панель */
     .topbar {
-      height: 55px;
-      background: #1a1a1a;
       display: flex;
       align-items: center;
-      padding: 0 12px;
+      padding: 10px;
       gap: 10px;
+      background: rgba(0,0,0,0.90);
     }
 
-    .back-btn {
+    .back {
       font-size: 22px;
       cursor: pointer;
+      opacity: 0.85;
     }
 
     .story-avatar {
       width: 38px;
       height: 38px;
       border-radius: 50%;
-      background: #444;
       overflow: hidden;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.15);
     }
 
     .story-avatar img {
@@ -44,33 +51,37 @@
     }
 
     .story-title {
-      flex: 1;
+      font-weight: 700;
       font-size: 15px;
-      font-weight: 600;
-    }
-
-    .lock {
-      font-size: 18px;
-      opacity: 0.8;
-    }
-
-    .menu-btn {
-      font-size: 22px;
-      cursor: pointer;
+      flex: 1;
     }
 
     /* Чат */
-    .chat-area {
-      height: calc(100vh - 110px);
+    .chat {
+      flex: 1;
+      padding: 15px 10px;
       overflow-y: auto;
-      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .system {
+      margin: 6px auto;
+      padding: 7px 16px;
+      font-size: 13px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.15);
+      opacity: 0.85;
+      text-align: center;
+      max-width: 85%;
     }
 
     .msg {
       display: flex;
-      margin: 10px 0;
       align-items: flex-end;
       gap: 8px;
+      max-width: 85%;
     }
 
     .msg.npc {
@@ -79,31 +90,16 @@
 
     .msg.player {
       justify-content: flex-end;
-    }
-
-    .bubble {
-      padding: 10px 14px;
-      border-radius: 18px;
-      max-width: 75%;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    .npc .bubble {
-      background: rgba(255,255,255,0.12);
-    }
-
-    .player .bubble {
-      background: rgba(200,0,0,0.55);
+      margin-left: auto;
     }
 
     .avatar {
-      width: 34px;
-      height: 34px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       overflow: hidden;
-      background: #555;
       flex-shrink: 0;
+      background: rgba(255,255,255,0.15);
     }
 
     .avatar img {
@@ -112,164 +108,166 @@
       object-fit: cover;
     }
 
-    /* Нижняя панель */
-    .input-bar {
-      height: 55px;
-      background: #1a1a1a;
-      display: flex;
-      align-items: center;
-      padding: 0 10px;
-      gap: 10px;
-    }
-
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #333;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    input {
-      flex: 1;
+    .bubble {
       padding: 10px 14px;
-      border-radius: 20px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .npc .bubble {
+      background: rgba(60,60,60,0.90);
+      border-bottom-left-radius: 6px;
+    }
+
+    .player .bubble {
+      background: rgba(0,120,255,0.75);
+      border-bottom-right-radius: 6px;
+    }
+
+    /* Нижняя панель */
+    .bottom-bar {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      gap: 10px;
+      background: rgba(0,0,0,0.88);
+    }
+
+    .msg-input {
+      flex: 1;
       border: none;
       outline: none;
-      background: #333;
-      color: white;
+      border-radius: 18px;
+      padding: 10px 12px;
       font-size: 14px;
+      background: rgba(255,255,255,0.14);
+      color: white;
     }
 
     .send-btn {
-      width: 42px;
-      height: 42px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
-      background: darkred;
+      border: none;
+      cursor: pointer;
+      background: #b00000;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: white;
       font-size: 18px;
-      cursor: pointer;
-    }
-
-    /* Загрузка */
-    .upload-box {
-      padding: 10px;
-      text-align: center;
-      background: rgba(255,255,255,0.06);
     }
   </style>
 </head>
 
 <body>
+<div class="overlay">
 
   <!-- Верх -->
   <div class="topbar">
-    <div class="back-btn">←</div>
+    <div class="back" onclick="goBack()">←</div>
 
-    <div class="story-avatar" id="storyAvatar"></div>
+    <div class="story-avatar">
+      <img id="storyAvatar">
+    </div>
 
-    <div class="story-title" id="storyTitle">Приватный чат</div>
-
-    <div class="lock">🔒</div>
-    <div class="menu-btn">⋮</div>
-  </div>
-
-  <!-- Загрузка истории -->
-  <div class="upload-box">
-    <input type="file" accept=".json" onchange="loadStory(event)">
+    <div class="story-title" id="storyTitle">История</div>
   </div>
 
   <!-- Чат -->
-  <div class="chat-area" id="chat"></div>
+  <div class="chat" id="chat"></div>
 
   <!-- Ввод -->
-  <div class="input-bar">
-    <div class="icon-btn">＋</div>
-    <div class="icon-btn">😊</div>
-
-    <input id="playerInput" placeholder="Напишите сообщение..." />
-
-    <div class="send-btn" onclick="sendMessage()">➤</div>
+  <div class="bottom-bar">
+    <input id="messageInput" class="msg-input" placeholder="Напишите сообщение...">
+    <button class="send-btn" onclick="sendMessage()">➤</button>
   </div>
 
+</div>
+
 <script>
-  let storyData = null;
-  let chatHistory = [];
+let storyData = null;
+let chatHistory = [];
 
-  function addMessage(text, type="npc", avatar=null) {
-    const chat = document.getElementById("chat");
+const chat = document.getElementById("chat");
 
-    const msg = document.createElement("div");
-    msg.className = "msg " + type;
+/* Назад */
+function goBack(){
+  window.location.href="author.html";
+}
 
-    if(type === "npc") {
-      const av = document.createElement("div");
-      av.className = "avatar";
+/* Системное сообщение */
+function addSystem(text){
+  const div = document.createElement("div");
+  div.className="system";
+  div.innerText=text;
+  chat.appendChild(div);
+}
 
-      if(avatar) {
-        av.innerHTML = `<img src="${avatar}">`;
-      }
+/* Сообщение */
+function addMessage(text,type="npc",avatar=null){
+  const msg=document.createElement("div");
+  msg.className="msg "+type;
 
-      msg.appendChild(av);
-    }
-
-    const bubble = document.createElement("div");
-    bubble.className = "bubble";
-    bubble.innerText = text;
-
-    msg.appendChild(bubble);
-    chat.appendChild(msg);
-
-    chat.scrollTop = chat.scrollHeight;
+  if(type==="npc"){
+    const av=document.createElement("div");
+    av.className="avatar";
+    if(avatar) av.innerHTML=`<img src="${avatar}">`;
+    msg.appendChild(av);
   }
 
-  function loadStory(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+  const bubble=document.createElement("div");
+  bubble.className="bubble";
+  bubble.innerText=text;
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      storyData = JSON.parse(e.target.result);
+  msg.appendChild(bubble);
+  chat.appendChild(msg);
 
-      document.getElementById("storyTitle").innerText = storyData.title;
+  chat.scrollTop=chat.scrollHeight;
+}
 
-      // аватар истории
-      if(storyData.avatar){
-        document.getElementById("storyAvatar").innerHTML =
-          `<img src="${storyData.avatar}">`;
-      }
+/* Автозагрузка истории */
+window.onload=function(){
+  const saved = localStorage.getItem("active_story");
 
-      addMessage("Начало истории: " + storyData.setup.startSituation, "npc");
-
-      chatHistory.push({
-        role: "system",
-        content: storyData.setup.startSituation
-      });
-    };
-
-    reader.readAsText(file);
+  if(!saved){
+    alert("История не выбрана!");
+    window.location.href="author.html";
+    return;
   }
 
-  async function sendMessage() {
-    const input = document.getElementById("playerInput");
-    const text = input.value.trim();
-    if (!text) return;
+  storyData = JSON.parse(saved);
 
-    addMessage(text, "player");
-    input.value = "";
+  document.getElementById("storyTitle").innerText = storyData.title;
+  document.getElementById("storyAvatar").src = storyData.avatar || "";
 
-    chatHistory.push({ role: "user", content: text });
+  addSystem("Начало истории:");
+  addSystem(storyData.setup.startSituation);
 
-    // 🔥 запрос на Render сервер
-    const response = await fetch("https://horror-studio.onrender.com/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+  chatHistory.push({
+    role:"system",
+    content: storyData.description
+  });
+};
+
+/* Отправка игрока → Groq */
+async function sendMessage(){
+  const input=document.getElementById("messageInput");
+  const text=input.value.trim();
+  if(!text) return;
+
+  addMessage(text,"player");
+  input.value="";
+
+  chatHistory.push({ role:"user", content:text });
+
+  addSystem("...");
+
+  try{
+    const response = await fetch("https://horror-studio.onrender.com/chat",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
       body: JSON.stringify({
         messages: chatHistory,
         characters: storyData.characters
@@ -278,25 +276,27 @@
 
     const data = await response.json();
 
-    let replyText = data.reply;
+    let reply = data.reply;
 
-    // пытаемся распарсить JSON
-    try {
-      const parsed = JSON.parse(replyText);
+    // Парсим JSON персонажа
+    let parsed = JSON.parse(reply);
 
-      const npcName = parsed.character;
-      const npcMessage = parsed.message;
+    const npcName = parsed.character;
+    const npcText = parsed.message;
 
-      const npc = storyData.characters.find(c => c.name === npcName);
+    const npc = storyData.characters.find(c=>c.name===npcName);
 
-      addMessage(npcMessage, "npc", npc?.avatar);
+    addMessage(npcText,"npc",npc?.avatar);
 
-      chatHistory.push({ role: "assistant", content: npcMessage });
+    chatHistory.push({
+      role:"assistant",
+      content:npcText
+    });
 
-    } catch {
-      addMessage(replyText, "npc");
-    }
+  }catch(err){
+    addSystem("Ошибка AI соединения...");
   }
+}
 </script>
 
 </body>
