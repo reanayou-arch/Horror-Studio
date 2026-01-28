@@ -1,48 +1,19 @@
-// Horror-Studio — server.js V3.0.0
-// Render + Groq API backend
+import express from "express";
+import fetch from "node-fetch";
+import dotenv from "dotenv";
 
-const express = require("express");
-const fetch = require("node-fetch");
-const path = require("path");
-require("dotenv").config();
+dotenv.config();
 
 const app = express();
 app.use(express.json());
 
-// ✅ Render раздаёт всё из папки public
-app.use(express.static(path.join(__dirname, "public")));
+// ✅ раздаём папку public
+app.use(express.static("public"));
 
-// ===============================
-// ✅ Главные страницы проекта
-// ===============================
 
-// Главное меню
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-// Панель автора
-app.get("/author", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "author.html"));
-});
-
-// Чат-игра
-app.get("/play", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "play.html"));
-});
-
-// ===============================
-// ✅ Groq AI API (чат)
-// ===============================
-
+// ✅ Groq API
 app.post("/chat", async (req, res) => {
   try {
-    const { messages } = req.body;
-
-    if (!messages) {
-      return res.status(400).json({ error: "Нет messages[]" });
-    }
-
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
@@ -53,35 +24,26 @@ app.post("/chat", async (req, res) => {
         },
         body: JSON.stringify({
           model: "llama3-70b-8192",
-          messages: messages,
+          messages: req.body.messages,
         }),
       }
     );
 
     const data = await response.json();
 
-    if (!data.choices) {
-      return res.status(500).json({
-        error: "Groq не вернул choices",
-        full: data,
-      });
-    }
-
     res.json({
       reply: data.choices[0].message.content,
     });
+
   } catch (err) {
-    console.error("Ошибка /chat:", err);
+    console.error("AI Error:", err);
     res.status(500).json({ error: "Ошибка AI соединения" });
   }
 });
 
-// ===============================
-// ✅ Render PORT
-// ===============================
 
+// ✅ Render Port
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
-  console.log("Horror-Studio server running on port", PORT);
+  console.log("Horror-Studio running on port", PORT);
 });
