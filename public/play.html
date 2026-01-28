@@ -3,157 +3,361 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Horror Studio — Чат</title>
+
+  <title>Horror-Studio — Игра</title>
 
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #1e1e1e;
+      font-family: "Segoe UI", sans-serif;
+      background: #2f2f2f;
       color: white;
+    }
+
+    /* Верхняя панель Telegram */
+    .top-bar {
+      height: 60px;
+      background: #1c1c1c;
       display: flex;
-      flex-direction: column;
-      height: 100vh;
+      align-items: center;
+      padding: 0 14px;
+      gap: 12px;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 10;
     }
 
-    header {
-      background: #111;
-      padding: 15px;
-      font-size: 20px;
-      text-align: center;
-      border-bottom: 1px solid #333;
+    .back-btn {
+      font-size: 22px;
+      cursor: pointer;
+      user-select: none;
     }
 
-    #chat {
+    .story-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: rgba(255,255,255,0.15);
+      flex-shrink: 0;
+    }
+
+    .story-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .story-title {
+      font-weight: 700;
+      font-size: 16px;
       flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      display: flex;
+    }
+
+    .lock-icon {
+      font-size: 18px;
+      opacity: 0.85;
+      margin-right: -2px;
+    }
+
+    .menu-icon {
+      font-size: 22px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Popup меню ⋮ */
+    .popup-menu {
+      position: fixed;
+      top: 65px;
+      right: 14px;
+      background: #222;
+      border-radius: 14px;
+      padding: 8px;
+      display: none;
       flex-direction: column;
-      gap: 10px;
+      gap: 6px;
+      z-index: 999;
+      min-width: 200px;
+    }
+
+    .popup-menu button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .popup-menu button:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* Чат */
+    .chat-area {
+      padding: 80px 12px 90px;
+      min-height: 100vh;
+      box-sizing: border-box;
     }
 
     .msg {
-      max-width: 75%;
-      padding: 12px 15px;
-      border-radius: 15px;
-      font-size: 16px;
-      line-height: 1.3;
-    }
-
-    .user {
-      background: #007aff;
-      align-self: flex-end;
-    }
-
-    .bot {
-      background: #333;
-      align-self: flex-start;
-    }
-
-    footer {
       display: flex;
-      padding: 10px;
-      background: #111;
-      border-top: 1px solid #333;
+      margin: 10px 0;
+      align-items: flex-end;
+      gap: 8px;
     }
 
-    input {
+    .bubble {
+      padding: 10px 14px;
+      border-radius: 18px;
+      max-width: 75%;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .npc .bubble {
+      background: rgba(255,255,255,0.18);
+      border-bottom-left-radius: 6px;
+    }
+
+    .player {
+      justify-content: flex-end;
+    }
+
+    .player .bubble {
+      background: #247dff;
+      border-bottom-right-radius: 6px;
+    }
+
+    .system {
+      justify-content: center;
+    }
+
+    .system .bubble {
+      background: rgba(255,255,255,0.12);
+      font-style: italic;
+      opacity: 0.85;
+      border-radius: 14px;
+      max-width: 100%;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: rgba(255,255,255,0.15);
+      flex-shrink: 0;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Нижняя панель */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #1c1c1c;
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      gap: 10px;
+      box-sizing: border-box;
+    }
+
+    .btn-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.12);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .send-btn {
+      background: darkred;
+      font-size: 20px;
+    }
+
+    .input {
       flex: 1;
       padding: 12px;
-      border-radius: 10px;
+      border-radius: 22px;
       border: none;
       outline: none;
-      font-size: 16px;
-    }
-
-    button {
-      margin-left: 10px;
-      padding: 12px 18px;
-      border: none;
-      border-radius: 10px;
-      background: red;
+      font-size: 14px;
+      background: rgba(255,255,255,0.14);
       color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      opacity: 0.85;
     }
   </style>
 </head>
 
 <body>
 
-  <header>Horror Studio — Игра</header>
+<!-- Верх -->
+<div class="top-bar">
+  <div class="back-btn" onclick="location.href='index.html'">←</div>
 
-  <div id="chat"></div>
+  <div class="story-avatar" id="storyAvatar"></div>
+  <div class="story-title" id="storyTitle">История</div>
 
-  <footer>
-    <input id="input" placeholder="Напишите сообщение..." />
-    <button onclick="sendMessage()">➤</button>
-  </footer>
+  <div class="lock-icon">🔒</div>
+  <div class="menu-icon" onclick="toggleMenu()">⋮</div>
+</div>
 
-  <script>
-    const chat = document.getElementById("chat");
-    const input = document.getElementById("input");
+<!-- Popup ⋮ -->
+<div class="popup-menu" id="popupMenu">
+  <button onclick="saveChat()">💾 Сохранить чат</button>
+</div>
 
-    // ✅ Render AI Endpoint
-    const API_URL = "https://horror-studio.onrender.com/chat";
+<!-- Чат -->
+<div class="chat-area" id="chat"></div>
 
-    function addMessage(text, type) {
-      const div = document.createElement("div");
-      div.className = "msg " + type;
-      div.innerText = text;
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
-    }
+<!-- Низ -->
+<div class="bottom-bar">
+  <button class="btn-circle">＋</button>
+  <button class="btn-circle">😊</button>
 
-    async function sendMessage() {
-      const text = input.value.trim();
-      if (!text) return;
+  <input class="input" id="playerInput" placeholder="Напишите сообщение..."/>
 
-      addMessage(text, "user");
-      input.value = "";
+  <button class="btn-circle send-btn" onclick="sendMessage()">➤</button>
+</div>
 
-      addMessage("...", "bot");
+<script>
+let storyData = null;
+let chatHistory = [];
 
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            message: text
-          })
-        });
+const chat = document.getElementById("chat");
 
-        const data = await res.json();
+/* ===== MENU ===== */
+function toggleMenu(){
+  const menu = document.getElementById("popupMenu");
+  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+}
 
-        // Удаляем "..."
-        chat.lastChild.remove();
+document.body.addEventListener("click",(e)=>{
+  if(!e.target.classList.contains("menu-icon")){
+    document.getElementById("popupMenu").style.display="none";
+  }
+});
 
-        if (data.reply) {
-          addMessage(data.reply, "bot");
-        } else {
-          addMessage("❌ Ошибка: AI не ответил", "bot");
-        }
+/* ===== MESSAGE UI ===== */
+function addMessage(text, type="system", avatar=null){
+  const msg = document.createElement("div");
+  msg.className = "msg " + type;
 
-      } catch (err) {
-        chat.lastChild.remove();
-        addMessage("❌ Ошибка AI соединения", "bot");
-      }
-    }
+  if(type==="npc"){
+    const av = document.createElement("div");
+    av.className="avatar";
+    if(avatar) av.innerHTML=`<img src="${avatar}">`;
+    msg.appendChild(av);
+  }
 
-    input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") sendMessage();
+  const bubble = document.createElement("div");
+  bubble.className="bubble";
+  bubble.innerText=text;
+
+  msg.appendChild(bubble);
+  chat.appendChild(msg);
+
+  chat.scrollTop = chat.scrollHeight;
+}
+
+/* ===== LOAD STORY ===== */
+window.onload = ()=>{
+  const saved = localStorage.getItem("active_story");
+
+  if(saved){
+    storyData = JSON.parse(saved);
+    initStory();
+  } else {
+    addMessage("История не выбрана. Вернись в меню.", "system");
+  }
+};
+
+function initStory(){
+  document.getElementById("storyTitle").innerText = storyData.title;
+
+  if(storyData.avatar){
+    document.getElementById("storyAvatar").innerHTML =
+      `<img src="${storyData.avatar}">`;
+  }
+
+  addMessage("Начало истории:", "system");
+  addMessage(storyData.setup.startSituation, "system");
+
+  chatHistory.push({
+    role:"system",
+    content: storyData.description
+  });
+}
+
+/* ===== SEND AI ===== */
+async function sendMessage(){
+  const input = document.getElementById("playerInput");
+  const text = input.value.trim();
+  if(!text) return;
+
+  addMessage(text, "player");
+  input.value="";
+
+  addMessage("...", "system");
+
+  try{
+    const res = await fetch("https://horror-studio.onrender.com/chat", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ message: text })
     });
 
-    // Стартовое сообщение
-    addMessage("Начало истории: Добро пожаловать в Horror Studio.", "bot");
-  </script>
+    const data = await res.json();
+
+    if(data.reply){
+      addMessage(data.reply, "npc", storyData.characters?.[0]?.avatar);
+    } else {
+      addMessage("AI не ответил.", "system");
+    }
+
+  }catch(err){
+    addMessage("Ошибка AI соединения...", "system");
+  }
+}
+
+/* ===== SAVE CHAT ===== */
+function saveChat(){
+  const saveData = {
+    story: storyData.title,
+    dialog: chatHistory
+  };
+
+  const blob = new Blob([JSON.stringify(saveData,null,2)],{
+    type:"application/json"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href=url;
+  a.download="chat_save.json";
+  a.click();
+  URL.revokeObjectURL(url);
+
+  alert("Чат сохранён!");
+}
+</script>
 
 </body>
 </html>
