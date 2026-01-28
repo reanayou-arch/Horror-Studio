@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Horror-Studio — Игра</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: #2f2f2f;
+      color: white;
+    }
+
+    /* Верхняя панель Telegram */
+    .top-bar {
+      height: 60px;
+      background: #1c1c1c;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 12px;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 10;
+    }
+
+    .back-btn {
+      font-size: 22px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .story-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: rgba(255,255,255,0.15);
+      flex-shrink: 0;
+    }
+
+    .story-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .story-title {
+      font-weight: 700;
+      font-size: 16px;
+      flex: 1;
+    }
+
+    .lock-icon {
+      font-size: 18px;
+      opacity: 0.8;
+      margin-right: -4px;
+    }
+
+    .menu-icon {
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    /* Popup меню ⋮ */
+    .popup-menu {
+      position: fixed;
+      top: 65px;
+      right: 14px;
+      background: #222;
+      border-radius: 14px;
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 999;
+      min-width: 180px;
+    }
+
+    .popup-menu button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .popup-menu button:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* Чат */
+    .chat-area {
+      padding: 80px 12px 90px;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .msg {
+      display: flex;
+      margin: 10px 0;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .bubble {
+      padding: 10px 14px;
+      border-radius: 18px;
+      max-width: 75%;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .npc .bubble {
+      background: rgba(255,255,255,0.18);
+      border-bottom-left-radius: 6px;
+    }
+
+    .player {
+      justify-content: flex-end;
+    }
+
+    .player .bubble {
+      background: #247dff;
+      border-bottom-right-radius: 6px;
+    }
+
+    .system {
+      justify-content: center;
+    }
+
+    .system .bubble {
+      background: rgba(255,255,255,0.12);
+      font-style: italic;
+      opacity: 0.85;
+      border-radius: 14px;
+      max-width: 100%;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: rgba(255,255,255,0.15);
+      flex-shrink: 0;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Нижняя панель */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #1c1c1c;
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      gap: 10px;
+      box-sizing: border-box;
+    }
+
+    .btn-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.12);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .send-btn {
+      background: darkred;
+      font-size: 20px;
+    }
+
+    .input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 22px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      background: rgba(255,255,255,0.14);
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Верх -->
+<div class="top-bar">
+  <div class="back-btn" onclick="location.href='author.html'">←</div>
+
+  <div class="story-avatar" id="storyAvatar"></div>
+  <div class="story-title" id="storyTitle">История</div>
+
+  <div class="lock-icon">🔒</div>
+  <div class="menu-icon" onclick="toggleMenu()">⋮</div>
+</div>
+
+<!-- Popup ⋮ -->
+<div class="popup-menu" id="popupMenu">
+  <button onclick="saveChat()">💾 Сохранить чат</button>
+</div>
+
+<!-- Чат -->
+<div class="chat-area" id="chat"></div>
+
+<!-- Низ -->
+<div class="bottom-bar">
+  <button class="btn-circle">＋</button>
+  <button class="btn-circle">😊</button>
+
+  <input class="input" id="playerInput" placeholder="Напишите сообщение..."/>
+
+  <button class="btn-circle send-btn" onclick="sendMessage()">➤</button>
+</div>
+
+<script>
+let storyData = null;
+let chatHistory = [];
+
+const chat = document.getElementById("chat");
+
+/* ===== MENU ===== */
+function toggleMenu(){
+  const menu = document.getElementById("popupMenu");
+  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+}
+
+document.body.addEventListener("click",(e)=>{
+  if(!e.target.classList.contains("menu-icon")){
+    document.getElementById("popupMenu").style.display="none";
+  }
+});
+
+/* ===== MESSAGE UI ===== */
+function addMessage(text, type="system", avatar=null){
+  const msg = document.createElement("div");
+  msg.className = "msg " + type;
+
+  if(type==="npc"){
+    const av = document.createElement("div");
+    av.className="avatar";
+    if(avatar) av.innerHTML=`<img src="${avatar}">`;
+    msg.appendChild(av);
+  }
+
+  const bubble = document.createElement("div");
+  bubble.className="bubble";
+  bubble.innerText=text;
+
+  msg.appendChild(bubble);
+  chat.appendChild(msg);
+
+  chat.scrollTop = chat.scrollHeight;
+}
+
+/* ===== LOAD STORY ===== */
+window.onload = ()=>{
+  const saved = localStorage.getItem("active_story");
+
+  if(saved){
+    storyData = JSON.parse(saved);
+    initStory();
+  } else {
+    addMessage("История не выбрана. Вернись в меню автора.", "system");
+  }
+};
+
+function initStory(){
+  document.getElementById("storyTitle").innerText = storyData.title;
+
+  if(storyData.avatar){
+    document.getElementById("storyAvatar").innerHTML =
+      `<img src="${storyData.avatar}">`;
+  }
+
+  addMessage("Начало истории:", "system");
+  addMessage(storyData.setup.startSituation, "system");
+
+  chatHistory.push({
+    role:"system",
+    content: storyData.description
+  });
+}
+
+/* ===== SEND AI ===== */
+async function sendMessage(){
+  const input = document.getElementById("playerInput");
+  const text = input.value.trim();
+  if(!text) return;
+
+  addMessage(text, "player");
+  input.value="";
+
+  chatHistory.push({ role:"user", content:text });
+
+  addMessage("...", "system");
+
+  try{
+    const res = await fetch("/chat", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({
+        messages: chatHistory,
+        characters: storyData.characters
+      })
+    });
+
+    const data = await res.json();
+    const parsed = JSON.parse(data.reply);
+
+    const npc = storyData.characters.find(c=>c.name===parsed.character);
+
+    addMessage(parsed.message, "npc", npc?.avatar);
+
+    chatHistory.push({
+      role:"assistant",
+      content: parsed.message
+    });
+
+  }catch(err){
+    addMessage("Ошибка AI соединения...", "system");
+  }
+}
+
+/* ===== SAVE CHAT ===== */
+function saveChat(){
+  const saveData = {
+    story: storyData.title,
+    dialog: chatHistory
+  };
+
+  const blob = new Blob([JSON.stringify(saveData,null,2)],{
+    type:"application/json"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href=url;
+  a.download="chat_save.json";
+  a.click();
+  URL.revokeObjectURL(url);
+
+  alert("Чат сохранён!");
+}
+</script>
+
+</body>
+</html>
