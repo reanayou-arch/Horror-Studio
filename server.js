@@ -1,27 +1,41 @@
 import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+/* ===== PATH FIX ===== */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+/* ===== STATIC SITE ===== */
+app.use(express.static(path.join(__dirname, "public")));
+
+/* ===== MAIN PAGE ===== */
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "author.html"));
+});
+
+/* ===== AI CHAT ENDPOINT ===== */
 app.post("/chat", async (req, res) => {
   try {
-    const { messages, characters, story } = req.body;
+    const { messages, characters } = req.body;
 
     const systemPrompt = `
-Ты пишешь хоррор-историю в формате Telegram-чата.
-
-Персонажи:
-${characters.map(c => `- ${c.name}: ${c.personality}`).join("\n")}
-
+Ты — Horror-Studio AI.
 Отвечай строго JSON:
 
 {
- "character": "Имя персонажа",
- "message": "реплика"
+ "character": "Имя",
+ "message": "Текст"
 }
+
+Персонажи:
+${characters.map(c => `- ${c.name}: ${c.personality}`).join("\n")}
 `;
 
     const response = await fetch(
@@ -43,13 +57,15 @@ ${characters.map(c => `- ${c.name}: ${c.personality}`).join("\n")}
     );
 
     const data = await response.json();
-    const reply = data.choices[0].message.content;
-
-    res.json({ reply });
+    res.json({ reply: data.choices[0].message.content });
 
   } catch (err) {
     res.status(500).json({ error: "AI Server Error" });
   }
 });
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+/* ===== START ===== */
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =>
+  console.log("Horror-Studio running on port", PORT)
+);
