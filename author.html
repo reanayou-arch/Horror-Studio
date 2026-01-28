@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <title>Horror-Studio — Панель автора</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Horror-Studio — Панель автора (V3.0.0)</title>
 
   <style>
     body {
@@ -15,6 +14,7 @@
     }
 
     .overlay {
+      background: rgba(0, 0, 0, 0.88);
       min-height: 100vh;
       padding: 15px 0;
     }
@@ -27,16 +27,23 @@
 
     h1 {
       text-align: center;
+      font-size: 26px;
+      margin: 20px 0;
+      font-weight: 900;
+    }
+
+    .planet {
+      text-align: center;
       font-size: 22px;
-      font-weight: 800;
-      margin-bottom: 20px;
+      margin-top: -10px;
+      opacity: 0.8;
     }
 
     .block {
-      background: rgba(255,255,255,0.06);
-      padding: 16px;
-      border-radius: 16px;
-      margin-top: 16px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 14px;
+      border-radius: 14px;
+      margin-top: 14px;
     }
 
     label {
@@ -44,6 +51,7 @@
       margin-top: 10px;
       font-weight: 600;
       font-size: 13px;
+      opacity: 0.9;
     }
 
     input, textarea {
@@ -52,9 +60,9 @@
       padding: 10px;
       border-radius: 12px;
       border: none;
-      outline: none;
       font-size: 14px;
-      background: rgba(255,255,255,0.14);
+      outline: none;
+      background: rgba(255, 255, 255, 0.14);
       color: white;
       box-sizing: border-box;
     }
@@ -64,198 +72,204 @@
       min-height: 70px;
     }
 
-    .avatar-preview {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      overflow: hidden;
-      margin: auto;
-      background: rgba(255,255,255,0.12);
-    }
-
-    .avatar-preview img {
+    .btn {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .add-btn, .save-btn {
-      width: 100%;
-      margin-top: 15px;
       padding: 14px;
       border-radius: 16px;
       border: none;
       cursor: pointer;
       font-size: 15px;
-      font-weight: bold;
+      font-weight: 700;
+      margin-top: 15px;
+    }
+
+    .red {
+      background: rgba(140, 0, 0, 0.85);
       color: white;
     }
 
-    .add-btn {
-      background: rgba(255,255,255,0.12);
-    }
-
-    .save-btn {
-      background: darkred;
+    .gray {
+      background: rgba(255,255,255,0.10);
+      color: white;
     }
 
     .character-card {
-      background: rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
       padding: 14px;
       border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
       margin-top: 14px;
       text-align: center;
     }
 
+    .avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .delete-btn {
-      margin-top: 10px;
-      border: none;
       background: none;
+      border: none;
       color: #ff6666;
       cursor: pointer;
+      font-size: 13px;
+    }
+
+    .story-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      margin-top: 10px;
+      position: relative;
+    }
+
+    .story-title {
+      font-weight: 700;
+    }
+
+    .dots {
+      cursor: pointer;
+      font-size: 22px;
+      padding: 0 10px;
+    }
+
+    .menu-popup {
+      position: absolute;
+      right: 10px;
+      top: 45px;
+      background: #222;
+      border-radius: 12px;
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 999;
+      min-width: 160px;
+    }
+
+    .menu-popup button {
+      background: none;
+      border: none;
+      color: white;
+      text-align: left;
+      padding: 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .menu-popup button:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .version {
+      text-align: center;
+      opacity: 0.5;
+      margin-top: 30px;
     }
   </style>
 </head>
 
 <body>
 <div class="overlay">
-<div class="container">
+  <div class="container">
 
-<h1>Создание истории</h1>
+    <!-- MENU -->
+    <div id="menuScreen">
+      <h1>Horror-Studio</h1>
+      <div class="planet">🪐</div>
 
-<!-- Аватар истории -->
-<div class="block">
-  <h2>Аватар истории</h2>
+      <button class="btn gray" onclick="openEditor()">➕ Добавить историю</button>
+      <button class="btn gray" onclick="openFile()">📂 Открыть историю (.json)</button>
 
-  <div class="avatar-preview" id="storyAvatarPreview"></div>
+      <div class="block">
+        <h2>Список историй:</h2>
+        <div id="storyList"></div>
+      </div>
 
-  <input type="file" accept="image/*" onchange="uploadStoryAvatar(event)">
-</div>
+      <div class="version">(Версия панели: V3.0.0)</div>
+    </div>
 
-<!-- Основное -->
-<div class="block">
-  <label>Название:</label>
-  <input id="storyTitle" placeholder="Введите название истории..."/>
+    <!-- EDITOR -->
+    <div id="editorScreen" style="display:none;">
+      <h1>Создание истории</h1>
 
-  <label>Описание для ИИ:</label>
-  <textarea id="storyDescription"></textarea>
-</div>
+      <div class="block">
+        <h2>Аватар истории</h2>
 
-<!-- Сетап -->
-<div class="block">
-  <label>Прошлое:</label>
-  <textarea id="storyPast"></textarea>
+        <div class="avatar" style="margin:auto;">
+          <img id="storyAvatarPreview" style="display:none;">
+        </div>
 
-  <label>Начальная ситуация:</label>
-  <textarea id="storyStart"></textarea>
-</div>
+        <button class="btn gray" onclick="document.getElementById('storyAvatar').click()">
+          📷 Загрузить аватар истории
+        </button>
 
-<!-- Персонажи -->
-<div class="block">
-  <h2>Персонажи</h2>
-  <div id="characterList"></div>
+        <input type="file" id="storyAvatar" accept="image/*" style="display:none;"
+          onchange="uploadStoryAvatar(event)">
+      </div>
 
-  <button class="add-btn" onclick="addCharacter()">➕ Добавить персонажа</button>
-</div>
+      <div class="block">
+        <label>Название:</label>
+        <input id="storyTitle">
 
-<!-- Сохранить -->
-<button class="save-btn" onclick="saveStory()">💾 Сохранить JSON</button>
+        <label>Описание для ИИ:</label>
+        <textarea id="storyDescription"></textarea>
+      </div>
 
-</div>
+      <div class="block">
+        <label>Прошлое:</label>
+        <textarea id="storyPast"></textarea>
+
+        <label>Начальная ситуация:</label>
+        <textarea id="storyStart"></textarea>
+      </div>
+
+      <div class="block">
+        <h2>Персонажи</h2>
+        <div id="characterList"></div>
+
+        <button class="btn gray" onclick="addCharacter()">➕ Добавить персонажа</button>
+      </div>
+
+      <button class="btn red" onclick="saveStory()">💾 Сохранить историю</button>
+      <button class="btn gray" onclick="backToMenu()">← Назад</button>
+    </div>
+
+    <input type="file" id="openJson" accept=".json" style="display:none;" onchange="importStory(event)">
+  </div>
 </div>
 
 <script>
 let characters = [];
 let storyAvatar = null;
+let editingId = null;
 
-/* ===== Аватар истории ===== */
-function uploadStoryAvatar(event){
-  const file = event.target.files[0];
-  if(!file) return;
-
-  compressImage(file, (result)=>{
-    storyAvatar = result;
-    document.getElementById("storyAvatarPreview").innerHTML =
-      `<img src="${storyAvatar}">`;
-  });
-}
-
-/* ===== Персонажи ===== */
-function addCharacter(){
-  const id = "ch_" + Date.now();
-
-  characters.push({
-    id,
-    name:"",
-    role:"",
-    personality:"",
-    avatar:null
-  });
-
-  renderCharacters();
-}
-
-function renderCharacters(){
-  const list = document.getElementById("characterList");
-  list.innerHTML = "";
-
-  characters.forEach(char=>{
-    const card = document.createElement("div");
-    card.className="character-card";
-
-    card.innerHTML=`
-      <div class="avatar-preview">
-        ${char.avatar ? `<img src="${char.avatar}">` : ""}
-      </div>
-
-      <label>Имя:</label>
-      <input value="${char.name}"
-        oninput="updateChar('${char.id}','name',this.value)">
-
-      <label>Роль:</label>
-      <input value="${char.role}"
-        oninput="updateChar('${char.id}','role',this.value)">
-
-      <label>Характер:</label>
-      <textarea oninput="updateChar('${char.id}','personality',this.value)">
-${char.personality}</textarea>
-
-      <label>Фото персонажа:</label>
-      <input type="file" accept="image/*"
-        onchange="uploadCharAvatar(event,'${char.id}')">
-
-      <button class="delete-btn"
-        onclick="deleteCharacter('${char.id}')">
-        ❌ Удалить
-      </button>
-    `;
-
-    list.appendChild(card);
-  });
-}
-
-function updateChar(id,field,value){
-  const c = characters.find(x=>x.id===id);
-  if(c) c[field]=value;
-}
-
-function deleteCharacter(id){
-  characters = characters.filter(x=>x.id!==id);
-  renderCharacters();
-}
-
-/* ===== Сжатие изображений ===== */
+/* IMAGE COMPRESS */
 function compressImage(file, callback){
   const img = new Image();
   const reader = new FileReader();
-
   reader.onload = e => img.src = e.target.result;
 
   img.onload = ()=>{
     const canvas = document.createElement("canvas");
     canvas.width = 256;
     canvas.height = 256;
-
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img,0,0,256,256);
 
@@ -266,24 +280,157 @@ function compressImage(file, callback){
   reader.readAsDataURL(file);
 }
 
-function uploadCharAvatar(event,id){
-  const file = event.target.files[0];
+/* MENU */
+function loadStories(){
+  const list = document.getElementById("storyList");
+  list.innerHTML = "";
+
+  const stories = JSON.parse(localStorage.getItem("stories") || "[]");
+
+  stories.forEach(story=>{
+    const item = document.createElement("div");
+    item.className="story-item";
+
+    item.innerHTML=`
+      <div class="story-title">${story.title}</div>
+      <div class="dots" onclick="togglePopup(event,'${story.id}')">⋮</div>
+
+      <div class="menu-popup" id="popup_${story.id}">
+        <button onclick="openStory('${story.id}')">▶ Играть</button>
+        <button onclick="downloadStory('${story.id}')">⬇ Скачать</button>
+        <button onclick="editStory('${story.id}')">✏ Редактировать</button>
+        <button onclick="deleteStory('${story.id}')">🗑 Удалить</button>
+      </div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function togglePopup(e,id){
+  e.stopPropagation();
+  document.querySelectorAll(".menu-popup").forEach(p=>{
+    if(p.id!=="popup_"+id) p.style.display="none";
+  });
+
+  const popup=document.getElementById("popup_"+id);
+  popup.style.display = popup.style.display==="flex" ? "none" : "flex";
+}
+
+document.body.addEventListener("click",()=>{
+  document.querySelectorAll(".menu-popup").forEach(p=>p.style.display="none");
+});
+
+/* EDITOR */
+function openEditor(){
+  editingId=null;
+  resetEditor();
+  document.getElementById("menuScreen").style.display="none";
+  document.getElementById("editorScreen").style.display="block";
+}
+
+function backToMenu(){
+  document.getElementById("editorScreen").style.display="none";
+  document.getElementById("menuScreen").style.display="block";
+  loadStories();
+}
+
+function resetEditor(){
+  characters=[];
+  storyAvatar=null;
+  document.getElementById("storyAvatarPreview").style.display="none";
+  document.getElementById("storyTitle").value="";
+  document.getElementById("storyDescription").value="";
+  document.getElementById("storyPast").value="";
+  document.getElementById("storyStart").value="";
+  renderCharacters();
+}
+
+/* STORY AVATAR */
+function uploadStoryAvatar(e){
+  const file=e.target.files[0];
   if(!file) return;
 
   compressImage(file,(result)=>{
-    const c = characters.find(x=>x.id===id);
+    storyAvatar=result;
+    const img=document.getElementById("storyAvatarPreview");
+    img.src=storyAvatar;
+    img.style.display="block";
+  });
+}
+
+/* CHARACTERS */
+function addCharacter(){
+  characters.push({
+    id:"ch_"+Date.now(),
+    name:"",
+    role:"",
+    personality:"",
+    avatar:null
+  });
+  renderCharacters();
+}
+
+function renderCharacters(){
+  const list=document.getElementById("characterList");
+  list.innerHTML="";
+
+  characters.forEach(char=>{
+    const card=document.createElement("div");
+    card.className="character-card";
+
+    card.innerHTML=`
+      <div class="avatar">
+        ${char.avatar?`<img src="${char.avatar}">`:""}
+      </div>
+
+      <label>Имя:</label>
+      <input value="${char.name}" oninput="updateChar('${char.id}','name',this.value)">
+
+      <label>Роль:</label>
+      <input value="${char.role}" oninput="updateChar('${char.id}','role',this.value)">
+
+      <label>Характер:</label>
+      <textarea oninput="updateChar('${char.id}','personality',this.value)">${char.personality}</textarea>
+
+      <label>Фото:</label>
+      <input type="file" accept="image/*" onchange="uploadAvatar(event,'${char.id}')">
+
+      <button class="delete-btn" onclick="deleteCharacter('${char.id}')">
+        ❌ Удалить персонажа
+      </button>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function updateChar(id,field,value){
+  const c=characters.find(x=>x.id===id);
+  if(c) c[field]=value;
+}
+
+function deleteCharacter(id){
+  characters=characters.filter(x=>x.id!==id);
+  renderCharacters();
+}
+
+function uploadAvatar(e,id){
+  const file=e.target.files[0];
+  if(!file) return;
+
+  compressImage(file,(result)=>{
+    const c=characters.find(x=>x.id===id);
     c.avatar=result;
     renderCharacters();
   });
 }
 
-/* ===== Сохранение ===== */
+/* SAVE */
 function saveStory(){
-  const story = {
-    id:"story_"+Date.now(),
-    avatar: storyAvatar,
+  const story={
+    id: editingId || "story_"+Date.now(),
     title: document.getElementById("storyTitle").value,
     description: document.getElementById("storyDescription").value,
+    avatar: storyAvatar,
     setup:{
       past: document.getElementById("storyPast").value,
       startSituation: document.getElementById("storyStart").value
@@ -291,19 +438,96 @@ function saveStory(){
     characters
   };
 
-  const json = JSON.stringify(story,null,2);
-  const blob = new Blob([json],{type:"application/json"});
-  const url = URL.createObjectURL(blob);
+  let stories=JSON.parse(localStorage.getItem("stories")||"[]");
+  stories = stories.filter(s=>s.id!==story.id);
+  stories.push(story);
 
-  const a = document.createElement("a");
-  a.href=url;
-  a.download = story.title ? story.title+".json" : "story.json";
-  a.click();
+  localStorage.setItem("stories",JSON.stringify(stories));
 
-  URL.revokeObjectURL(url);
+  downloadObject(story, story.title+".json");
   alert("История сохранена!");
+  backToMenu();
 }
-</script>
 
+/* ACTIONS */
+function downloadObject(obj,filename){
+  const blob=new Blob([JSON.stringify(obj,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadStory(id){
+  const stories=JSON.parse(localStorage.getItem("stories")||"[]");
+  const story=stories.find(s=>s.id===id);
+  downloadObject(story,story.title+".json");
+}
+
+function deleteStory(id){
+  let stories=JSON.parse(localStorage.getItem("stories")||"[]");
+  stories=stories.filter(s=>s.id!==id);
+  localStorage.setItem("stories",JSON.stringify(stories));
+  loadStories();
+}
+
+function editStory(id){
+  const stories=JSON.parse(localStorage.getItem("stories")||"[]");
+  const story=stories.find(s=>s.id===id);
+
+  editingId=story.id;
+  openEditor();
+
+  document.getElementById("storyTitle").value=story.title;
+  document.getElementById("storyDescription").value=story.description;
+  document.getElementById("storyPast").value=story.setup.past;
+  document.getElementById("storyStart").value=story.setup.startSituation;
+
+  storyAvatar=story.avatar;
+  if(storyAvatar){
+    const img=document.getElementById("storyAvatarPreview");
+    img.src=storyAvatar;
+    img.style.display="block";
+  }
+
+  characters=story.characters || [];
+  renderCharacters();
+}
+
+/* PLAY */
+function openStory(id){
+  const stories=JSON.parse(localStorage.getItem("stories")||"[]");
+  const story=stories.find(s=>s.id===id);
+
+  localStorage.setItem("active_story", JSON.stringify(story));
+  window.location.href="play.html";
+}
+
+function openFile(){
+  document.getElementById("openJson").click();
+}
+
+function importStory(e){
+  const file=e.target.files[0];
+  if(!file) return;
+
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const story=JSON.parse(ev.target.result);
+
+    let stories=JSON.parse(localStorage.getItem("stories")||"[]");
+    stories.push(story);
+    localStorage.setItem("stories",JSON.stringify(stories));
+
+    loadStories();
+    alert("История загружена!");
+  };
+  reader.readAsText(file);
+}
+
+loadStories();
+</script>
 </body>
 </html>
