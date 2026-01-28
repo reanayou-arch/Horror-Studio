@@ -14,29 +14,29 @@
     }
 
     .overlay {
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.88);
       min-height: 100vh;
       padding: 15px 0;
     }
 
     .container {
       width: 95%;
-      max-width: 600px;
+      max-width: 650px;
       margin: auto;
     }
 
     h1 {
       text-align: center;
-      font-size: 22px;
-      margin-bottom: 18px;
+      font-size: 24px;
+      margin-bottom: 15px;
       font-weight: 800;
     }
 
     .block {
       background: rgba(255, 255, 255, 0.06);
-      padding: 14px;
-      border-radius: 14px;
-      margin-top: 14px;
+      padding: 15px;
+      border-radius: 16px;
+      margin-top: 15px;
     }
 
     label {
@@ -44,7 +44,6 @@
       margin-top: 10px;
       font-weight: 600;
       font-size: 13px;
-      opacity: 0.9;
     }
 
     input, textarea {
@@ -65,72 +64,27 @@
       min-height: 70px;
     }
 
-    .character-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      padding: 14px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.05);
-      margin-top: 14px;
+    .avatar-box {
       text-align: center;
+      margin-bottom: 15px;
     }
 
-    .avatar {
-      width: 70px;
-      height: 70px;
+    .avatar-preview {
+      width: 90px;
+      height: 90px;
       border-radius: 50%;
+      margin: auto;
       overflow: hidden;
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255,255,255,0.15);
     }
 
-    .avatar img {
+    .avatar-preview img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    .add-btn {
-      margin-top: 14px;
-      width: 100%;
-      padding: 12px;
-      border-radius: 14px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      background: rgba(255, 255, 255, 0.12);
-      color: white;
-      font-weight: 600;
-    }
-
-    .save-btn {
-      margin-top: 20px;
-      width: 100%;
-      padding: 14px;
-      border-radius: 16px;
-      border: none;
-      cursor: pointer;
-      font-size: 15px;
-      background: rgba(140, 0, 0, 0.8);
-      color: white;
-      font-weight: 700;
-    }
-
-    .story-avatar {
-      text-align: center;
-      margin-bottom: 15px;
-    }
-
-    .story-avatar img {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 10px;
-    }
-
-    .open-btn {
+    .btn {
       margin-top: 15px;
       width: 100%;
       padding: 14px;
@@ -138,9 +92,53 @@
       border: none;
       cursor: pointer;
       font-size: 15px;
-      background: rgba(0, 120, 255, 0.4);
+      font-weight: bold;
+      background: rgba(140, 0, 0, 0.85);
       color: white;
-      font-weight: 700;
+    }
+
+    .add-btn {
+      background: rgba(255,255,255,0.12);
+      margin-top: 12px;
+    }
+
+    .character-card {
+      margin-top: 15px;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      text-align: center;
+    }
+
+    .delete-btn {
+      margin-top: 10px;
+      background: none;
+      border: none;
+      color: #ff6666;
+      cursor: pointer;
+    }
+
+    .story-list {
+      margin-top: 20px;
+    }
+
+    .story-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.06);
+      padding: 12px;
+      border-radius: 14px;
+      margin-top: 10px;
+    }
+
+    .story-item button {
+      background: rgba(255,255,255,0.12);
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -149,53 +147,42 @@
 <div class="overlay">
   <div class="container">
 
-    <h1>Создание новой хоррор-истории</h1>
+    <h1>Horror-Studio — Панель автора</h1>
 
-    <!-- Аватар истории -->
-    <div class="block story-avatar">
-      <h2>Аватар истории</h2>
-      <img id="storyAvatarPreview" src="" style="display:none;">
-      <input type="file" accept="image/*" onchange="uploadStoryAvatar(event)">
+    <!-- ✅ Главное меню -->
+    <div class="block">
+      <h2>📚 Список историй</h2>
+      <div id="storyList"></div>
     </div>
 
-    <!-- Основное -->
+    <!-- ✅ Создание истории -->
     <div class="block">
+      <h2>➕ Создание новой истории</h2>
+
+      <!-- Аватар истории -->
+      <div class="avatar-box">
+        <div class="avatar-preview" id="storyAvatarPreview"></div>
+        <input type="file" accept="image/*" onchange="uploadStoryAvatar(event)">
+      </div>
+
       <label>Название:</label>
-      <input id="storyTitle" placeholder="Введите название истории..." />
+      <input id="storyTitle">
 
       <label>Описание для ИИ:</label>
-      <textarea id="storyDescription"
-        placeholder="Опишите сюжет, атмосферу..."></textarea>
-    </div>
+      <textarea id="storyDescription"></textarea>
 
-    <!-- Предыстория -->
-    <div class="block">
       <label>Прошлое:</label>
       <textarea id="storyPast"></textarea>
 
       <label>Начальная ситуация:</label>
       <textarea id="storyStart"></textarea>
-    </div>
 
-    <!-- Персонажи -->
-    <div class="block">
-      <h2>Персонажи</h2>
+      <h3>Персонажи</h3>
       <div id="characterList"></div>
 
-      <button class="add-btn" onclick="addCharacter()">
-        ➕ Добавить персонажа
-      </button>
+      <button class="btn add-btn" onclick="addCharacter()">➕ Добавить персонажа</button>
+      <button class="btn" onclick="saveStory()">💾 Сохранить историю</button>
     </div>
-
-    <!-- Сохранить -->
-    <button class="save-btn" onclick="saveStory()">
-      💾 Сохранить историю
-    </button>
-
-    <!-- Открыть в игре -->
-    <button class="open-btn" onclick="openInGame()">
-      ▶ Открыть историю в игре
-    </button>
 
   </div>
 </div>
@@ -211,9 +198,8 @@
     const reader = new FileReader();
     reader.onload = e => {
       storyAvatar = e.target.result;
-      const img = document.getElementById("storyAvatarPreview");
-      img.src = storyAvatar;
-      img.style.display = "block";
+      document.getElementById("storyAvatarPreview").innerHTML =
+        `<img src="${storyAvatar}">`;
     };
     reader.readAsDataURL(file);
   }
@@ -233,39 +219,43 @@
     const list = document.getElementById("characterList");
     list.innerHTML = "";
 
-    characters.forEach(char => {
-      const card = document.createElement("div");
-      card.className = "character-card";
+    characters.forEach(char=>{
+      const div = document.createElement("div");
+      div.className="character-card";
 
-      card.innerHTML = `
-        <div class="avatar">
+      div.innerHTML = `
+        <div class="avatar-preview">
           ${char.avatar ? `<img src="${char.avatar}">` : ""}
         </div>
 
-        <input placeholder="Имя"
-          value="${char.name}"
+        <label>Имя:</label>
+        <input value="${char.name}"
           oninput="char.name=this.value">
 
-        <input placeholder="Роль"
-          value="${char.role}"
+        <label>Роль:</label>
+        <input value="${char.role}"
           oninput="char.role=this.value">
 
-        <textarea placeholder="Характер"
-          oninput="char.personality=this.value">${char.personality}</textarea>
+        <label>Характер:</label>
+        <textarea oninput="char.personality=this.value">${char.personality}</textarea>
 
         <input type="file" accept="image/*"
-          onchange="uploadAvatar(event,'${char.id}')">
+          onchange="uploadCharAvatar(event,'${char.id}')">
+
+        <button class="delete-btn"
+          onclick="deleteCharacter('${char.id}')">❌ Удалить</button>
       `;
-      list.appendChild(card);
+
+      list.appendChild(div);
     });
   }
 
-  function uploadAvatar(event,id){
+  function uploadCharAvatar(event,id){
     const file = event.target.files[0];
     if(!file) return;
 
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = e=>{
       const char = characters.find(c=>c.id===id);
       char.avatar = e.target.result;
       renderCharacters();
@@ -273,31 +263,60 @@
     reader.readAsDataURL(file);
   }
 
-  function buildStory(){
-    return {
+  function deleteCharacter(id){
+    characters = characters.filter(c=>c.id!==id);
+    renderCharacters();
+  }
+
+  function saveStory(){
+    const story = {
       id: "story_" + Date.now(),
+      avatar: storyAvatar,
       title: document.getElementById("storyTitle").value,
       description: document.getElementById("storyDescription").value,
-      avatar: storyAvatar,
       setup: {
         past: document.getElementById("storyPast").value,
         startSituation: document.getElementById("storyStart").value
       },
       characters
     };
-  }
 
-  function saveStory(){
-    const story = buildStory();
-    localStorage.setItem("active_story", JSON.stringify(story));
+    let stories = JSON.parse(localStorage.getItem("stories")||"[]");
+    stories.push(story);
+    localStorage.setItem("stories",JSON.stringify(stories));
+
     alert("История сохранена!");
+    renderStoryList();
   }
 
-  function openInGame(){
-    const story = buildStory();
-    localStorage.setItem("active_story", JSON.stringify(story));
-    window.location.href = "play.html";
+  function renderStoryList(){
+    const list = document.getElementById("storyList");
+    list.innerHTML="";
+
+    let stories = JSON.parse(localStorage.getItem("stories")||"[]");
+
+    stories.forEach(story=>{
+      const item=document.createElement("div");
+      item.className="story-item";
+
+      item.innerHTML=`
+        <span>${story.title}</span>
+        <button onclick="openStory('${story.id}')">▶ Открыть</button>
+      `;
+
+      list.appendChild(item);
+    });
   }
+
+  function openStory(id){
+    let stories = JSON.parse(localStorage.getItem("stories")||"[]");
+    let story = stories.find(s=>s.id===id);
+
+    localStorage.setItem("active_story",JSON.stringify(story));
+    window.location.href="play.html";
+  }
+
+  renderStoryList();
 </script>
 
 </body>
